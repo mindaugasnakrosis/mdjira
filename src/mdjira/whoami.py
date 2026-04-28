@@ -1,4 +1,4 @@
-"""`md-to-jira whoami` — verify credentials + project access.
+"""`mdjira whoami` — verify credentials + project access.
 
 This is the cheapest possible round-trip to Jira. Run it after `init`,
 or any time you suspect your token has expired or you're talking to the

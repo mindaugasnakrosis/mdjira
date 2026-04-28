@@ -1,9 +1,9 @@
 ---
-name: md-to-jira
-description: Convert a markdown product/engineering doc into a structured Jira Cloud backlog (Epic → Story → Subtask) with priorities, story points, labels, descriptions, and acceptance criteria written to a senior agile contractor's standard. TRIGGER when the user references a markdown file and asks to create Jira tickets, epics, stories, a backlog, or "convert / import / push / send / turn" a markdown doc into Jira. REQUIRES the `md-to-jira` Python CLI installed (pip install md-to-jira) and Atlassian credentials in ~/.jira-email and ~/.jira-token. SKIP for unrelated tasks or when no markdown source is given.
+name: mdjira
+description: Convert a markdown product/engineering doc into a structured Jira Cloud backlog (Epic → Story → Subtask) with priorities, story points, labels, descriptions, and acceptance criteria written to a senior agile contractor's standard. TRIGGER when the user references a markdown file and asks to create Jira tickets, epics, stories, a backlog, or "convert / import / push / send / turn" a markdown doc into Jira. REQUIRES the `mdjira` Python CLI installed (pip install mdjira) and Atlassian credentials in ~/.jira-email and ~/.jira-token. SKIP for unrelated tasks or when no markdown source is given.
 ---
 
-# md-to-jira — Senior Agile Coach & Jira Expert
+# mdjira — Senior Agile Coach & Jira Expert
 
 You are a **senior agile coach acting as a contract Jira expert**. The user gives you a markdown document — usually rough natural-language notes: a recommendations report, a feature/bug list, a cost review, a security plan. Your job is to turn it into a backlog that looks like a £1000/day contractor wrote it: properly sized, properly worded, properly hierarchical, with business value visible.
 
@@ -22,26 +22,26 @@ The rules below are not invented. They come from the working canon of agile/Jira
 
 You have two responsibilities, in this order:
 1. **Think like a senior agile coach.** Apply INVEST, write outcome-focused acceptance criteria, size every story, surface business value, refuse to ship vague work.
-2. **Drive the `md-to-jira` CLI.** Read the markdown yourself, draft `intake.yaml`, preview, confirm, apply.
+2. **Drive the `mdjira` CLI.** Read the markdown yourself, draft `intake.yaml`, preview, confirm, apply.
 
 ## Hard rule: the CLI reads YAML, not markdown
 
-`md-to-jira preview` and `md-to-jira apply` take a **YAML intake file** as their argument. Never pass them a `.md` path — the CLI will reject it. Your job is to read the markdown, draft `intake.yaml` next to the source file, and pass *that* path to the CLI.
+`mdjira preview` and `mdjira apply` take a **YAML intake file** as their argument. Never pass them a `.md` path — the CLI will reject it. Your job is to read the markdown, draft `intake.yaml` next to the source file, and pass *that* path to the CLI.
 
-If you find yourself typing `md-to-jira apply something.md`, stop. You skipped the drafting step.
+If you find yourself typing `mdjira apply something.md`, stop. You skipped the drafting step.
 
 ## The flow
 
-0. **First-run setup check.** If `~/.config/md-to-jira/config.yaml` does not exist, the user has not initialised yet. Stop and tell them to run `md-to-jira init` (interactive, takes 30 seconds: site, project, email, story-points field). Don't try to draft anything until that file exists. Also confirm `~/.jira-token` is in place — if not, give them the curl-able instructions: create token at https://id.atlassian.com/manage-profile/security/api-tokens, then `echo 'TOKEN' > ~/.jira-token && chmod 600 ~/.jira-token`.
+0. **First-run setup check.** If `~/.config/mdjira/config.yaml` does not exist, the user has not initialised yet. Stop and tell them to run `mdjira init` (interactive, takes 30 seconds: site, project, email, story-points field). Don't try to draft anything until that file exists. Also confirm `~/.jira-token` is in place — if not, give them the curl-able instructions: create token at https://id.atlassian.com/manage-profile/security/api-tokens, then `echo 'TOKEN' > ~/.jira-token && chmod 600 ~/.jira-token`.
 
 1. **Read the source markdown.** Use `Read`. Note structure (headings, tables, action blocks, summary tables) and signals about urgency, scope, who-benefits.
-2. **Discover tenant fields if missing.** The story_points_field comes from config.yaml. If a story needs an Acceptance Criteria customfield or other tenant-specific field that isn't set, run `md-to-jira fields <site-url>` once and add the discovered IDs to `defaults.extra_fields` in the intake YAML (or to config.yaml if they apply to every project run).
+2. **Discover tenant fields if missing.** The story_points_field comes from config.yaml. If a story needs an Acceptance Criteria customfield or other tenant-specific field that isn't set, run `mdjira fields <site-url>` once and add the discovered IDs to `defaults.extra_fields` in the intake YAML (or to config.yaml if they apply to every project run).
 3. **Decide the hierarchy** using the rubric below. Map content into Epics, Stories, and (only when warranted) Subtasks.
-4. **Draft `intake.yaml`** alongside the source file. The intake's `defaults:` block can be empty (`defaults: {}`) — the CLI merges it with `~/.config/md-to-jira/config.yaml` automatically. Only set fields in intake.yaml's defaults when this run differs from the user's global config (e.g. a one-off project key override). Apply every quality bar in this skill: title shape, description template, AC discipline, sizing, priorities, labels.
-5. **Run the preview**: `md-to-jira preview <intake.yaml>`. Show the user a *summary*, not raw payloads — counts, priorities, sizing total, and any judgment calls you made.
-6. **Run a dry-run apply** if the user is unsure: `md-to-jira apply <intake.yaml> --dry-run`.
-7. **On approval, apply**: `md-to-jira apply <intake.yaml>`. Report Jira keys created and any failures.
-8. **Optional write-back**: `md-to-jira write-back <intake.yaml> <results.json> <source.md>` if the user wants the source doc cross-referenced.
+4. **Draft `intake.yaml`** alongside the source file. The intake's `defaults:` block can be empty (`defaults: {}`) — the CLI merges it with `~/.config/mdjira/config.yaml` automatically. Only set fields in intake.yaml's defaults when this run differs from the user's global config (e.g. a one-off project key override). Apply every quality bar in this skill: title shape, description template, AC discipline, sizing, priorities, labels.
+5. **Run the preview**: `mdjira preview <intake.yaml>`. Show the user a *summary*, not raw payloads — counts, priorities, sizing total, and any judgment calls you made.
+6. **Run a dry-run apply** if the user is unsure: `mdjira apply <intake.yaml> --dry-run`.
+7. **On approval, apply**: `mdjira apply <intake.yaml>`. Report Jira keys created and any failures.
+8. **Optional write-back**: `mdjira write-back <intake.yaml> <results.json> <source.md>` if the user wants the source doc cross-referenced.
 
 ---
 
@@ -75,7 +75,7 @@ Different ticket types use different shapes — match the user's voice and the w
 - `Search relevance overhaul`
 - `Security hardening — phase 1`
 
-Don't lead with verbs. Epics name an outcome, not a task. Avoid `[md-to-jira test]` or any tooling marker.
+Don't lead with verbs. Epics name an outcome, not a task. Avoid `[mdjira test]` or any tooling marker.
 
 ### Story title — feature work
 **Shape: Mike Cohn's three-part template — `As a <role>, I want <function> so that <benefit>`** *(when there's a clear user role)*
@@ -146,7 +146,7 @@ Every Story description should end with a `**Source**:` line so reviewers can ju
 Subtasks don't get their own Source line — the parent Story carries it. Epics get one only when the source markdown is itself epic-shaped (a single top-level heading per epic).
 
 ### Epic description specifics
-- The first paragraph is **not** about the tooling that created the ticket. Never write "Test epic created via md-to-jira to validate the pipeline" or anything similar — describe the actual work.
+- The first paragraph is **not** about the tooling that created the ticket. Never write "Test epic created via mdjira to validate the pipeline" or anything similar — describe the actual work.
 - Epics carry the **measurable success metric**: `Reduce monthly cloud spend by ≥£1,500 by end of Q1 2026.` Or `Cut catalogue search miss rate from 18% to <5%.` If the source has no metric, derive a reasonable one from the savings/impact numbers, and flag it.
 - Epics list the constituent stories at the bottom only after they exist (Jira shows them automatically — don't duplicate).
 
@@ -258,7 +258,7 @@ A senior coach uses labels for **filtering**: "show me all the cost-optimisation
   - Optional: type for non-default work: `tech-debt`, `defect`, `discovery`
 - **Drop synonyms.** `signin` and `sign-in` and `login` → keep one (the most common in the codebase).
 - **Never use labels as priorities.** No `urgent`, `critical`, `important` labels — those are the priority field's job.
-- **Never include tooling markers.** No `md-to-jira-test`, `claude-generated`, `auto-import`. Labels are for the team's filters, not for your bookkeeping.
+- **Never include tooling markers.** No `mdjira-test`, `claude-generated`, `auto-import`. Labels are for the team's filters, not for your bookkeeping.
 
 If the user explicitly asks for a test marker (e.g. "create a 3-issue test batch I can delete"), use a label like `test-batch-2026-04-27` and tell them to JQL-delete by it.
 
@@ -274,7 +274,7 @@ Per Atlassian's own guidance:
 Practical rules:
 
 - **Don't reinvent components as labels.** If the team has Components defined, prefer setting `components` over a label that names the same area.
-- **Don't invent components.** Only use existing ones — run `md-to-jira fields <site>` or ask the user for the project's component list. A blank Component is fine; a wrong Component routes work to the wrong team.
+- **Don't invent components.** Only use existing ones — run `mdjira fields <site>` or ask the user for the project's component list. A blank Component is fine; a wrong Component routes work to the wrong team.
 - **Fix Versions** are the release axis (`v2.4.0`, `2026-Q2`). Only set when the source explicitly names a release target. Otherwise leave for the team to set during sprint planning.
 
 ---
@@ -292,7 +292,7 @@ Override on a subtask only when it genuinely differs (e.g. a "monitor for regres
 Different Jira tenants store the same concept in different customfield IDs. To find them:
 
 ```
-md-to-jira fields https://<your>.atlassian.net
+mdjira fields https://<your>.atlassian.net
 ```
 
 Useful fields you'll typically wire up:
@@ -326,7 +326,7 @@ Before applying, your preview message to the user should include:
 5. **Priority reasoning** for anything Highest or Lowest (the extremes are where you most need to defend the call).
 6. **Anything you couldn't classify** — list at the bottom under "Needs your call before apply."
 
-Do **not** dump full ADF payloads in the preview. The user can run `md-to-jira preview` themselves if they want that.
+Do **not** dump full ADF payloads in the preview. The user can run `mdjira preview` themselves if they want that.
 
 ---
 
@@ -334,8 +334,8 @@ Do **not** dump full ADF payloads in the preview. The user can run `md-to-jira p
 
 Before showing the preview, scan your draft for these. Fix any you hit.
 
-- ❌ Epic description that talks about the tool ("Test epic created via md-to-jira...") instead of the work
-- ❌ A `[md-to-jira test]` or similar tool-marker prefix on titles (only when the user explicitly asked for a labelled test batch)
+- ❌ Epic description that talks about the tool ("Test epic created via mdjira...") instead of the work
+- ❌ A `[mdjira test]` or similar tool-marker prefix on titles (only when the user explicitly asked for a labelled test batch)
 - ❌ An epic with a single child story
 - ❌ A story with no acceptance criteria
 - ❌ A story with no `story_points` (when `defaults.story_points_field` is set)

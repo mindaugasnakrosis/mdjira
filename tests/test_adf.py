@@ -7,7 +7,7 @@ nodes. These tests pin the fix.
 
 from __future__ import annotations
 
-from md_to_jira.adf import to_adf
+from mdjira.adf import to_adf
 
 
 def _paragraphs(doc):

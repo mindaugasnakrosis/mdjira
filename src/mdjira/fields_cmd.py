@@ -1,4 +1,4 @@
-"""`md-to-jira fields <SITE>` — discover tenant-specific custom fields.
+"""`mdjira fields <SITE>` — discover tenant-specific custom fields.
 
 Different Jira tenants use different customfield IDs for things like
 "Acceptance Criteria", "Story Points", "Epic Link" etc. This subcommand

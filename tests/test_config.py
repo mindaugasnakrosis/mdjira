@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from md_to_jira.config import (
+from mdjira.config import (
     config_path,
     load_config,
     merge_intake_with_config,
@@ -19,7 +19,7 @@ from md_to_jira.config import (
 @pytest.fixture
 def isolated_config(tmp_path, monkeypatch):
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
-    return tmp_path / "md-to-jira" / "config.yaml"
+    return tmp_path / "mdjira" / "config.yaml"
 
 
 def test_config_path_respects_xdg(isolated_config):

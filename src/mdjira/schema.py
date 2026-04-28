@@ -22,7 +22,7 @@ class Defaults:
     issue_type_story: str = "Story"
     issue_type_subtask: str = "Sub-task"
     # Tenant-specific custom field that holds Story Points. Discoverable
-    # via `md-to-jira fields <SITE>` (look for "Story Points" or "Story
+    # via `mdjira fields <SITE>` (look for "Story Points" or "Story
     # point estimate"). On many Cloud tenants this is `customfield_10016`;
     # on team-managed projects it may be `customfield_10026`. When set,
     # any story's `story_points` value is written through to this field.

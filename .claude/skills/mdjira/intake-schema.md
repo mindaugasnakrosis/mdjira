@@ -1,12 +1,12 @@
 # `intake.yaml` schema
 
-Authoritative shape consumed by `md-to-jira preview` and `md-to-jira apply`. Keep this in sync with `src/md_to_jira/schema.py`.
+Authoritative shape consumed by `mdjira preview` and `mdjira apply`. Keep this in sync with `src/mdjira/schema.py`.
 
 ## Where defaults come from
 
 The CLI merges three sources, lowest priority first:
 
-1. **`~/.config/md-to-jira/config.yaml`** — written by `md-to-jira init`. Holds `jira_site`, `project`, `email`, and `story_points_field` so you don't repeat them per project.
+1. **`~/.config/mdjira/config.yaml`** — written by `mdjira init`. Holds `jira_site`, `project`, `email`, and `story_points_field` so you don't repeat them per project.
 2. **The intake YAML's `defaults:` block** — overrides the config per key.
 3. **CLI flags / env vars** — override everything for a single run.
 
@@ -23,7 +23,7 @@ defaults:
   issue_type_subtask: Sub-task
 
   # Tenant-specific custom field that holds Story Points. Discover via
-  # `md-to-jira fields <site-url>` and look for "Story Points" or
+  # `mdjira fields <site-url>` and look for "Story Points" or
   # "Story point estimate". When set, every story's `story_points` value
   # is written through to this field on create.
   story_points_field: customfield_10016
@@ -98,7 +98,7 @@ If a subtask omits `priority` or has empty `labels`, it inherits the parent stor
 Find tenant-specific customfield IDs:
 
 ```
-md-to-jira fields https://your-tenant.atlassian.net
+mdjira fields https://your-tenant.atlassian.net
 ```
 
 The output highlights likely-useful fields (Story Points, Acceptance Criteria, Sprint, Team, etc.) — copy the relevant `customfield_*` IDs into `defaults.story_points_field` or `defaults.extra_fields`.
@@ -107,7 +107,7 @@ The output highlights likely-useful fields (Story Points, Acceptance Criteria, S
 
 `extra_fields` and `story_points_field` values pass through to Jira's REST API verbatim — there's no client-side coercion. That means **the shape you pass has to match the customfield's type**, and Jira's customfield types each take a different JSON shape. Use this table when you set up a tenant the first time:
 
-| Field type (in Jira admin)                 | Discover via `md-to-jira fields`        | YAML value shape                                                      |
+| Field type (in Jira admin)                 | Discover via `mdjira fields`        | YAML value shape                                                      |
 | ------------------------------------------ | --------------------------------------- | --------------------------------------------------------------------- |
 | **Number** (story points, effort, cost)    | `schema.type: number`                   | Bare number: `3` or `3.5`.                                            |
 | **Short text** (single-line)               | `schema.type: string`                   | Bare string: `"Platform team"`.                                       |
@@ -124,7 +124,7 @@ The output highlights likely-useful fields (Story Points, Acceptance Criteria, S
 | **Labels** (custom labels field)           | `schema.type: array`, items: `string`   | Array of strings: `["q1", "platform"]`.                               |
 | **URL**                                    | `schema.type: string`, custom: `...url` | Bare string: `"https://example.com/runbook"`.                          |
 | **Sprint**                                 | `schema.type: array`, items: `string`   | Array containing the **sprint id** as a number: `[42]`. Names don't resolve via REST. |
-| **Epic Link** (classic projects only)      | `schema.type: any`, custom: `...epic-link` | Bare epic key string: `"ABC-100"`. md-to-jira already handles this — don't set it manually. |
+| **Epic Link** (classic projects only)      | `schema.type: any`, custom: `...epic-link` | Bare epic key string: `"ABC-100"`. mdjira already handles this — don't set it manually. |
 
 ADF (Atlassian Document Format) shape for paragraph fields is:
 

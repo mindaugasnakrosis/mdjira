@@ -1,4 +1,4 @@
-# Contributing to md-to-jira
+# Contributing to mdjira
 
 Thanks for your interest. This is a small, opinionated tool — contributions that align with its scope are welcome; off-scope expansions probably aren't. Before opening a PR for anything non-trivial, open an issue to check fit.
 
@@ -23,8 +23,8 @@ Thanks for your interest. This is a small, opinionated tool — contributions th
 Python 3.10+ is required. Get a clean editable install:
 
 ```bash
-git clone https://github.com/mindaugasnakrosis/md-to-jira.git
-cd md-to-jira
+git clone https://github.com/mindaugasnakrosis/mdjira.git
+cd mdjira
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 ```
@@ -43,22 +43,22 @@ All three must be green for a PR to merge — CI enforces it.
 ## Project layout
 
 ```
-src/md_to_jira/         # the CLI package
+src/mdjira/         # the CLI package
   __init__.py           # version
   cli.py                # argparse entry point + subcommands
   schema.py             # intake YAML dataclasses + parse_intake()
-  config.py             # ~/.config/md-to-jira/config.yaml load/save/merge
+  config.py             # ~/.config/mdjira/config.yaml load/save/merge
   jira_client.py        # curl-based REST v3 client with retry + bulk
   apply.py              # epic→story→subtask bulk batches
   preview.py            # JSON preview without HTTP
   write_back.py         # append Jira keys back into source markdown
   lint.py               # mechanical anti-pattern checker
-  fields_cmd.py         # `md-to-jira fields` discovery output
-  whoami.py             # `md-to-jira whoami` health-check
+  fields_cmd.py         # `mdjira fields` discovery output
+  whoami.py             # `mdjira whoami` health-check
   adf.py                # plain-text → Atlassian Document Format
   term.py               # ANSI colour helpers (NO_COLOR-aware)
   yaml_io.py            # PyYAML wrappers
-.claude/skills/md-to-jira/
+.claude/skills/mdjira/
   SKILL.md              # the senior-agile-coach skill loaded by Claude Code
   intake-schema.md      # YAML schema reference
 tests/                  # pytest, no live network calls
@@ -74,7 +74,7 @@ examples/               # md → intake.yaml demonstrations
 
 ## Adding a lint rule
 
-Lint rules live in `src/md_to_jira/lint.py` keyed by `MJxxx` codes. To add one:
+Lint rules live in `src/mdjira/lint.py` keyed by `MJxxx` codes. To add one:
 
 1. Pick the next free code (`MJ018`, `MJ019`, ...).
 2. Add the rule logic in `lint()` — return a `Diagnostic(severity, code, location, message)`.
@@ -85,20 +85,20 @@ Severity guideline: **error** for things that will produce an objectively bad ti
 
 ## Adding a CLI subcommand
 
-1. Create `src/md_to_jira/<command>.py` with the implementation.
+1. Create `src/mdjira/<command>.py` with the implementation.
 2. In `cli.py`, add the import, an `_cmd_<command>` handler, and a sub-parser inside `build_parser()`.
 3. Match the existing flag patterns: `--site`/`--project`/`--email` for HTTP-touching commands, falling back to config defaults.
 4. Add tests; mock `subprocess.run` for curl calls (never make real network requests in tests).
 
 ## Releasing (for maintainers)
 
-1. Bump `version` in `pyproject.toml` and `src/md_to_jira/__init__.py`.
+1. Bump `version` in `pyproject.toml` and `src/mdjira/__init__.py`.
 2. Update `CHANGELOG.md`: move `[Unreleased]` items into a new dated section, refresh the version-link footnotes.
 3. Commit, then `git tag v0.x.0` and push the tag — `.github/workflows/release.yml` will build and publish to PyPI via Trusted Publishing (configure once at <https://pypi.org/manage/account/publishing/>).
 
 ## Filing issues
 
-- **Bugs** — please use the bug-report template; include the CLI version (`md-to-jira --version`), the failing command line, and the relevant intake YAML or markdown snippet (redact tokens / customer data).
+- **Bugs** — please use the bug-report template; include the CLI version (`mdjira --version`), the failing command line, and the relevant intake YAML or markdown snippet (redact tokens / customer data).
 - **Skill-quality issues** — paste the actual produced ticket and what you'd expected. The skill is opinionated; concrete examples are how it gets sharper.
 - **Feature ideas** — discuss before implementing if the change touches the schema or adds a runtime dep.
 

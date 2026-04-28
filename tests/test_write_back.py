@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from md_to_jira.schema import Defaults, Epic, Intake, Story
-from md_to_jira.write_back import write_back
+from mdjira.schema import Defaults, Epic, Intake, Story
+from mdjira.write_back import write_back
 
 
 def _make_intake() -> Intake:

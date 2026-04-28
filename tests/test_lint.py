@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from md_to_jira.lint import lint
-from md_to_jira.schema import Defaults, Epic, Intake, Story, Subtask
+from mdjira.lint import lint
+from mdjira.schema import Defaults, Epic, Intake, Story, Subtask
 
 
 def _make_intake(
@@ -172,13 +172,13 @@ def test_uniform_priority_warning_when_3_or_more_stories():
 def test_tooling_marker_in_summary_warns():
     intake = _make_intake(
         epics=[
-            Epic(id="E1", summary="[md-to-jira test] Some epic", description="x"),
+            Epic(id="E1", summary="[mdjira test] Some epic", description="x"),
         ],
         stories=[
             Story(
                 id="S1",
                 epic="E1",
-                summary="[md-to-jira test] A story",
+                summary="[mdjira test] A story",
                 description="**Acceptance criteria**\n- done",
             ),
             Story(
@@ -205,7 +205,7 @@ def test_tooling_marker_label_warns():
                 epic="E1",
                 summary=f"thing {i}",
                 description="**Acceptance criteria**\n- done",
-                labels=["md-to-jira-test"],
+                labels=["mdjira-test"],
             )
             for i in range(3)
         ],

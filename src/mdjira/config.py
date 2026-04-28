@@ -1,4 +1,4 @@
-"""User-level configuration at `~/.config/md-to-jira/config.yaml`.
+"""User-level configuration at `~/.config/mdjira/config.yaml`.
 
 Convention follows what `gh`, `aws`, `gcloud`, etc. do — one XDG-compliant
 config file holds non-secret defaults. The actual API token still lives
@@ -22,7 +22,7 @@ from typing import Any
 import yaml
 
 CONFIG_FILE_NAME = "config.yaml"
-APP_DIR_NAME = "md-to-jira"
+APP_DIR_NAME = "mdjira"
 
 
 def config_dir() -> Path:

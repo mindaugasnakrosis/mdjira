@@ -42,14 +42,14 @@ class Diagnostic:
 # ---------------------------------------------------------------------------
 
 _TOOLING_MARKERS_IN_SUMMARY = (
-    re.compile(r"^\s*\[md-to-jira[^\]]*\]", re.IGNORECASE),
+    re.compile(r"^\s*\[mdjira[^\]]*\]", re.IGNORECASE),
     re.compile(r"^\s*\[test\b[^\]]*\]", re.IGNORECASE),
     re.compile(r"^\s*\[claude[^\]]*\]", re.IGNORECASE),
     re.compile(r"^\s*\[auto[^\]]*\]", re.IGNORECASE),
 )
 
 _TOOLING_MARKER_LABELS = (
-    re.compile(r"^md-to-jira", re.IGNORECASE),
+    re.compile(r"^mdjira", re.IGNORECASE),
     re.compile(r"^claude-", re.IGNORECASE),
     re.compile(r"^auto-import", re.IGNORECASE),
     re.compile(r"^test-only$", re.IGNORECASE),

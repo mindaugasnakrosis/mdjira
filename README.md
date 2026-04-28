@@ -1,4 +1,4 @@
-# md-to-jira
+# mdjira
 
 Turn a markdown document — a roadmap, cost review, security plan, feature list, anything — into a structured Jira Cloud backlog (Epic → Story → Subtask) with priorities, labels, descriptions, and acceptance criteria.
 
@@ -6,7 +6,7 @@ You give it a `.md` file. It gives you Jira tickets. That's the whole interface.
 
 ## Why this exists
 
-Teams keep their roadmaps, cost reviews, security plans, and feature lists in markdown — but track delivery in Jira. Copy-pasting items by hand is slow and error-prone. `md-to-jira` reads the markdown and creates the issues, with a reviewable preview so you see what's about to land before anything hits Jira.
+Teams keep their roadmaps, cost reviews, security plans, and feature lists in markdown — but track delivery in Jira. Copy-pasting items by hand is slow and error-prone. `mdjira` reads the markdown and creates the issues, with a reviewable preview so you see what's about to land before anything hits Jira.
 
 ## How it works
 
@@ -32,7 +32,7 @@ This isn't a "wrap GPT around Jira" tool. The skill encodes the working canon of
 - **Labels vs Components** — Atlassian's distinction: components are project-scoped, controlled, with optional ownership routing; labels are global, free-text, unvalidated, case-sensitive, no spaces. [Components vs Labels | Atlassian Community](https://community.atlassian.com/forums/Jira-articles/What-s-the-Difference-Between-Components-and-Labels-in-Jira/ba-p/2872013)
 - **Jira priority semantics** — Atlassian admin docs. [Priority levels | Atlassian](https://support.atlassian.com/jira-service-management-cloud/docs/what-are-priority-levels-in-jira-service-management/)
 
-The skill lives at [`.claude/skills/md-to-jira/SKILL.md`](.claude/skills/md-to-jira/SKILL.md) — open it. Every rule has reasoning. Disagree with one? Fork it. That's the point.
+The skill lives at [`.claude/skills/mdjira/SKILL.md`](.claude/skills/mdjira/SKILL.md) — open it. Every rule has reasoning. Disagree with one? Fork it. That's the point.
 
 ## Install
 
@@ -45,64 +45,64 @@ Requirements: Python 3.10+, `git`, and `curl` (preinstalled on macOS and most Li
 Until the package is published on PyPI, install it from source:
 
 ```bash
-git clone https://github.com/mindaugasnakrosis/md-to-jira.git
-cd md-to-jira
+git clone https://github.com/mindaugasnakrosis/mdjira.git
+cd mdjira
 pip install .
 ```
 
-(Once it's on PyPI: `pip install md-to-jira`.)
+(Once it's on PyPI: `pip install mdjira`.)
 
 Verify it's on your `PATH`:
 
 ```bash
-md-to-jira --version
-# md-to-jira 0.1.0
+mdjira --version
+# mdjira 0.1.0
 ```
 
-If `md-to-jira: command not found`, your `pip` installed it under a directory not on your `PATH`. Either:
-- use `python3 -m md_to_jira.cli --version` instead, or
+If `mdjira: command not found`, your `pip` installed it under a directory not on your `PATH`. Either:
+- use `python3 -m mdjira.cli --version` instead, or
 - add `python3 -m site --user-base`/`bin` to your `PATH`.
 
 ### 2. Install the Claude skill
 
-The skill ships with the CLI but needs to be physically copied to `~/.claude/skills/md-to-jira/` so Claude Code can find it from any working directory. The CLI does that for you:
+The skill ships with the CLI but needs to be physically copied to `~/.claude/skills/mdjira/` so Claude Code can find it from any working directory. The CLI does that for you:
 
 ```bash
-md-to-jira install-skill
+mdjira install-skill
 ```
 
-It's idempotent — re-running only writes files whose content actually changed. **Always re-run it after `pip install -U md-to-jira`** so the skill stays in sync with the CLI version (every release ships an updated `SKILL.md`).
+It's idempotent — re-running only writes files whose content actually changed. **Always re-run it after `pip install -U mdjira`** so the skill stays in sync with the CLI version (every release ships an updated `SKILL.md`).
 
 After installing or upgrading, **restart Claude Code** (or open a new session) — skills are loaded once per session, so a running session keeps the old copy until you restart.
 
 Verify:
 
 ```bash
-ls ~/.claude/skills/md-to-jira/SKILL.md
-# /Users/you/.claude/skills/md-to-jira/SKILL.md
+ls ~/.claude/skills/mdjira/SKILL.md
+# /Users/you/.claude/skills/mdjira/SKILL.md
 ```
 
-> **Project-local install (alternative).** If you only want the skill in one repo (e.g. shared with teammates via git), copy `.claude/skills/md-to-jira/` from this repo into your own and commit it. Claude Code reads project-local skills only when launched from that repo's directory; user-global skills work everywhere.
+> **Project-local install (alternative).** If you only want the skill in one repo (e.g. shared with teammates via git), copy `.claude/skills/mdjira/` from this repo into your own and commit it. Claude Code reads project-local skills only when launched from that repo's directory; user-global skills work everywhere.
 
 ## One-time setup
 
 Create an Atlassian API token at <https://id.atlassian.com/manage-profile/security/api-tokens>, then run two commands:
 
 ```bash
-md-to-jira init                  # walks you through site, project, email; auto-detects Story Points field
+mdjira init                  # walks you through site, project, email; auto-detects Story Points field
 echo 'ATATTxxxxxxx' > ~/.jira-token && chmod 600 ~/.jira-token
 ```
 
-`md-to-jira init` writes a small config file at `~/.config/md-to-jira/config.yaml` with your defaults — this is the same XDG convention `gh`, `aws`, `gcloud`, and other modern CLIs use. Once it's written, every run picks up your site, project, email, and Story Points custom field automatically; you never have to repeat them.
+`mdjira init` writes a small config file at `~/.config/mdjira/config.yaml` with your defaults — this is the same XDG convention `gh`, `aws`, `gcloud`, and other modern CLIs use. Once it's written, every run picks up your site, project, email, and Story Points custom field automatically; you never have to repeat them.
 
-The token is kept in a separate `~/.jira-token` file (chmod 600) because secrets have a different lifecycle than config — you rotate them separately, you back them up separately, and you definitely don't want them showing up when you `cat ~/.config/md-to-jira/config.yaml`.
+The token is kept in a separate `~/.jira-token` file (chmod 600) because secrets have a different lifecycle than config — you rotate them separately, you back them up separately, and you definitely don't want them showing up when you `cat ~/.config/mdjira/config.yaml`.
 
 ### Non-interactive setup
 
 For CI, dotfile management, or just speed:
 
 ```bash
-md-to-jira init \
+mdjira init \
   --site https://your-tenant.atlassian.net \
   --project ABC \
   --email you@example.com
@@ -110,7 +110,7 @@ md-to-jira init \
 
 The Story Points customfield is auto-detected from the Jira API as soon as a token is in place — interactive `init` queries `/rest/api/3/field` after writing config and adds the right `customfield_xxxxx` to your config automatically. To pin a specific field id (e.g. when your tenant has multiple Story Points lookalikes), pass `--story-points-field customfield_10016`. To opt out of detection, pass `--no-story-points`.
 
-If you ever need to inspect tenant fields directly: `md-to-jira fields https://your-tenant.atlassian.net`.
+If you ever need to inspect tenant fields directly: `mdjira fields https://your-tenant.atlassian.net`.
 
 <details>
 <summary>Alternative: environment variables</summary>
@@ -124,7 +124,7 @@ If you ever need to inspect tenant fields directly: `md-to-jira fields https://y
 Open Claude Code in any directory and point the skill at your markdown file:
 
 ```
-> /md-to-jira specs/cost-review.md
+> /mdjira specs/cost-review.md
 ```
 
 Or just describe what you want — Claude picks up the skill from the phrasing:
@@ -141,9 +141,9 @@ The skill will:
 4. On your approval, create the issues in Jira and report the keys.
 5. Optionally append the new Jira keys back into the source markdown.
 
-If Claude Code says `Unknown command: /md-to-jira`, the skill isn't installed where it can find it — run `md-to-jira install-skill` and restart Claude Code.
+If Claude Code says `Unknown command: /mdjira`, the skill isn't installed where it can find it — run `mdjira install-skill` and restart Claude Code.
 
-If the skill *is* installed but seems out of date (e.g. it claims a feature is "out of scope" that the README says works), it's a stale copy from a previous version. Run `md-to-jira install-skill` again and restart Claude Code; the install is idempotent and only writes files that actually changed.
+If the skill *is* installed but seems out of date (e.g. it claims a feature is "out of scope" that the README says works), it's a stale copy from a previous version. Run `mdjira install-skill` again and restart Claude Code; the install is idempotent and only writes files that actually changed.
 
 ### First-run walkthrough
 
@@ -152,7 +152,7 @@ The repo ships a realistic example at [`examples/ims-project-example.md`](exampl
 Try it end-to-end:
 
 ```
-> /md-to-jira examples/ims-project-example.md
+> /mdjira examples/ims-project-example.md
 ```
 
 What you should see:
@@ -171,7 +171,7 @@ If the skill is interrupted or you want to add new tickets later, just re-run it
 
 ## Classic vs team-managed Jira projects
 
-Jira Cloud projects come in two flavours and they wire epics to stories differently under the hood. `md-to-jira` detects which one your project is and handles both — you don't need to configure anything.
+Jira Cloud projects come in two flavours and they wire epics to stories differently under the hood. `mdjira` detects which one your project is and handles both — you don't need to configure anything.
 
 ## What v1 does not do
 
@@ -185,8 +185,8 @@ These are deliberate. v1 picks the smallest end-to-end loop that covers the comm
 ## Development
 
 ```bash
-git clone https://github.com/mindaugasnakrosis/md-to-jira
-cd md-to-jira
+git clone https://github.com/mindaugasnakrosis/mdjira
+cd mdjira
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest

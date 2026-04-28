@@ -13,7 +13,7 @@ labels: bug
 
 ```bash
 # The exact command line you ran (redact tokens / customer data).
-md-to-jira ...
+mdjira ...
 ```
 
 If the bug involves a markdown or intake file, paste a minimal snippet that triggers it:
@@ -29,7 +29,7 @@ If the bug involves a markdown or intake file, paste a minimal snippet that trig
 
 ## Environment
 
-- `md-to-jira --version`:
+- `mdjira --version`:
 - Python version (`python3 --version`):
 - OS:
 - Jira project type (classic / team-managed / unsure):

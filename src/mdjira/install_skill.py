@@ -1,4 +1,4 @@
-"""`md-to-jira install-skill` — copy the bundled Claude skill into ~/.claude/skills/.
+"""`mdjira install-skill` — copy the bundled Claude skill into ~/.claude/skills/.
 
 The Claude Code runtime loads skills from `~/.claude/skills/<name>/SKILL.md`
 (user-global) or `<repo>/.claude/skills/<name>/SKILL.md` (project-local).
@@ -6,7 +6,7 @@ Most users want the global install so the skill works from any directory.
 
 This subcommand exists because the skill ships alongside the CLI but
 needs to be physically copied to a location Claude Code reads. Without
-it, every `pip install -U md-to-jira` would silently leave the user on a
+it, every `pip install -U mdjira` would silently leave the user on a
 stale skill — the exact failure mode that prompted this command.
 """
 
@@ -15,14 +15,14 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-SKILL_DIR_NAME = "md-to-jira"
+SKILL_DIR_NAME = "mdjira"
 
 
 def _find_skill_source() -> Path | None:
     """Locate the bundled skill files.
 
     Priority:
-      1. The canonical project location at `<repo-root>/.claude/skills/md-to-jira/`
+      1. The canonical project location at `<repo-root>/.claude/skills/mdjira/`
          when running from a source checkout (editable install).
       2. `<package>/skill_data/` when shipped inside a wheel (future).
     """

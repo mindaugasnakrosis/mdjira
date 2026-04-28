@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from unittest.mock import patch
 
-from md_to_jira.jira_client import JiraAuth, JiraClient
+from mdjira.jira_client import JiraAuth, JiraClient
 
 
 def _curl_response(stdout_body: str, status: int = 200):
@@ -42,7 +42,7 @@ def test_retry_on_503_then_success():
         ]
     )
 
-    with patch("md_to_jira.jira_client.subprocess.run", side_effect=lambda *a, **kw: next(responses)):
+    with patch("mdjira.jira_client.subprocess.run", side_effect=lambda *a, **kw: next(responses)):
         result = client.create_issue({"fields": {}})
     assert result == {"key": "ABC-1"}
     # Two backoffs before success: 1s, 2s.
@@ -59,7 +59,7 @@ def test_retry_on_429_then_success():
             _curl_response(json.dumps({"key": "ABC-1"}), status=201),
         ]
     )
-    with patch("md_to_jira.jira_client.subprocess.run", side_effect=lambda *a, **kw: next(responses)):
+    with patch("mdjira.jira_client.subprocess.run", side_effect=lambda *a, **kw: next(responses)):
         client.create_issue({"fields": {}})
     assert sleeps == [0.5]
 
@@ -72,7 +72,7 @@ def test_no_retry_on_400():
 
     with (
         patch(
-            "md_to_jira.jira_client.subprocess.run",
+            "mdjira.jira_client.subprocess.run",
             side_effect=[_curl_response(json.dumps({"errorMessages": ["bad"]}), status=400)],
         ),
         contextlib.suppress(Exception),
@@ -86,7 +86,7 @@ def test_backoff_exhausted_returns_last_response():
     sleeps: list[float] = []
     client = _make_client(max_attempts=2, backoff_base=0.1, sleep=sleeps.append)
     with patch(
-        "md_to_jira.jira_client.subprocess.run",
+        "mdjira.jira_client.subprocess.run",
         side_effect=[_curl_response("", status=503), _curl_response("", status=503)],
     ):
         try:
@@ -109,7 +109,7 @@ def test_bulk_create_all_succeed():
         "errors": [],
     }
     with patch(
-        "md_to_jira.jira_client.subprocess.run",
+        "mdjira.jira_client.subprocess.run",
         return_value=_curl_response(json.dumps(response_body), status=201),
     ):
         keys, errors = client.bulk_create_issues([{"fields": {}}, {"fields": {}}, {"fields": {}}])
@@ -130,7 +130,7 @@ def test_bulk_create_partial_failure_correlates_indices():
         ],
     }
     with patch(
-        "md_to_jira.jira_client.subprocess.run",
+        "mdjira.jira_client.subprocess.run",
         return_value=_curl_response(json.dumps(response_body), status=201),
     ):
         keys, errors = client.bulk_create_issues(
@@ -142,7 +142,7 @@ def test_bulk_create_partial_failure_correlates_indices():
 
 def test_bulk_create_empty_payload_short_circuits():
     client = _make_client()
-    with patch("md_to_jira.jira_client.subprocess.run") as mock_run:
+    with patch("mdjira.jira_client.subprocess.run") as mock_run:
         keys, errors = client.bulk_create_issues([])
     assert keys == [] and errors == []
     assert mock_run.call_count == 0

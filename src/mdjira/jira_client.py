@@ -72,7 +72,7 @@ def load_auth(email: str | None = None) -> JiraAuth:
             resolved_email = email_path.read_text(encoding="utf-8").strip()
     if not resolved_email:
         raise JiraError(
-            "Jira email not set. Run `md-to-jira init` to set it, export JIRA_EMAIL, or pass --email."
+            "Jira email not set. Run `mdjira init` to set it, export JIRA_EMAIL, or pass --email."
         )
 
     token = os.environ.get("JIRA_API_TOKEN")
@@ -290,7 +290,7 @@ class JiraClient:
 
     def list_fields(self) -> list[dict[str, Any]]:
         """Return all fields visible to the authenticated user — used by
-        `md-to-jira fields` for tenant-specific customfield discovery
+        `mdjira fields` for tenant-specific customfield discovery
         (Acceptance Criteria, Story Points, etc.).
         """
         resp = self._request("GET", "/rest/api/3/field")

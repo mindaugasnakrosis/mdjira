@@ -1,13 +1,13 @@
-"""md-to-jira CLI entry point.
+"""mdjira CLI entry point.
 
 Subcommands:
 
-  md-to-jira preview INTAKE.yaml
-  md-to-jira apply   INTAKE.yaml [--dry-run] [--force] [--results PATH] [--email EMAIL]
-  md-to-jira write-back INTAKE.yaml RESULTS.json SOURCE.md
+  mdjira preview INTAKE.yaml
+  mdjira apply   INTAKE.yaml [--dry-run] [--force] [--results PATH] [--email EMAIL]
+  mdjira write-back INTAKE.yaml RESULTS.json SOURCE.md
 
 The CLI is deliberately small. Producing the YAML from raw markdown is
-the job of the md-to-jira Claude skill (see .claude/skills/md-to-jira),
+the job of the mdjira Claude skill (see .claude/skills/mdjira),
 not this binary.
 """
 
@@ -39,9 +39,9 @@ def _load_intake(path: str):
     if p.suffix.lower() in {".md", ".markdown"}:
         raise IntakeError(
             f"{path} looks like a markdown file, not a YAML intake. "
-            f"The `md-to-jira` CLI takes the structured YAML intake produced "
-            f"by the md-to-jira Claude skill, not raw markdown. "
-            f"In Claude Code: run `/md-to-jira {path}` and the skill will "
+            f"The `mdjira` CLI takes the structured YAML intake produced "
+            f"by the mdjira Claude skill, not raw markdown. "
+            f"In Claude Code: run `/mdjira {path}` and the skill will "
             f"draft the intake YAML, preview it, and apply it for you."
         )
     raw = load(path)
@@ -164,7 +164,7 @@ def _cmd_whoami(args: argparse.Namespace) -> int:
     site, project = _resolve_site_and_project(args)
     if not site:
         print(
-            "error: no Jira site configured. Run `md-to-jira init` or pass --site.",
+            "error: no Jira site configured. Run `mdjira init` or pass --site.",
             file=sys.stderr,
         )
         return 2
@@ -196,7 +196,7 @@ def _prompt(question: str, *, default: str | None = None) -> str:
 
 
 def _cmd_init(args: argparse.Namespace) -> int:
-    """Interactive first-run setup. Writes ~/.config/md-to-jira/config.yaml.
+    """Interactive first-run setup. Writes ~/.config/mdjira/config.yaml.
 
     Non-interactive use is also supported via flags: any flag value is
     accepted as-is and skips the prompt. If all required values are
@@ -219,7 +219,7 @@ def _cmd_init(args: argparse.Namespace) -> int:
         return 0
 
     print()
-    print(header("Setting up md-to-jira"))
+    print(header("Setting up mdjira"))
     print(dim("Press Enter to accept the default shown in [brackets]."))
     print()
 
@@ -268,7 +268,7 @@ def _cmd_init(args: argparse.Namespace) -> int:
         print(f"  Create one at {cyan('https://id.atlassian.com/manage-profile/security/api-tokens')}, then:")
         print(f"    {bold('echo')} 'YOUR_TOKEN' > {bold('~/.jira-token')} && chmod 600 ~/.jira-token")
         print(
-            f"  Then re-run {bold('md-to-jira init')} — Story Points field will be auto-detected, "
+            f"  Then re-run {bold('mdjira init')} — Story Points field will be auto-detected, "
             f"and credentials verified."
         )
         return 0
@@ -284,7 +284,7 @@ def _cmd_init(args: argparse.Namespace) -> int:
         rc = whoami(client, project_key=project)
     except JiraError as exc:
         print(warn(f"Verification failed: {exc}"))
-        print(dim("  Config was saved; fix the issue and run `md-to-jira whoami` to re-check."))
+        print(dim("  Config was saved; fix the issue and run `mdjira whoami` to re-check."))
         return 0
 
     if not args.no_story_points and not args.story_points_field and not story_points_field:
@@ -302,20 +302,20 @@ def _cmd_init(args: argparse.Namespace) -> int:
                 dim(
                     "  Story Points field not auto-detected (no number-typed customfield "
                     "named 'Story Points' or 'Story point estimate' visible to your account). "
-                    "Run `md-to-jira fields <site>` to inspect manually, then add "
-                    "`story_points_field: customfield_xxxxx` to ~/.config/md-to-jira/config.yaml."
+                    "Run `mdjira fields <site>` to inspect manually, then add "
+                    "`story_points_field: customfield_xxxxx` to ~/.config/mdjira/config.yaml."
                 )
             )
 
     if rc == 0:
         print()
-        print(green(bold("All set.")) + " You can now use the md-to-jira skill in Claude Code.")
+        print(green(bold("All set.")) + " You can now use the mdjira skill in Claude Code.")
     return rc
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="md-to-jira",
+        prog="mdjira",
         description="Create Jira Cloud Epic → Story → Subtask issues from a structured YAML intake.",
     )
     p.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
@@ -353,7 +353,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     isk = sub.add_parser(
         "install-skill",
-        help="Copy the bundled Claude skill into ~/.claude/skills/md-to-jira/.",
+        help="Copy the bundled Claude skill into ~/.claude/skills/mdjira/.",
     )
     isk.add_argument(
         "--force",
@@ -386,7 +386,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     it = sub.add_parser(
         "init",
-        help="Set up ~/.config/md-to-jira/config.yaml interactively.",
+        help="Set up ~/.config/mdjira/config.yaml interactively.",
     )
     it.add_argument("--site", help="Jira site URL (skip prompt)")
     it.add_argument("--project", help="Default project key (skip prompt)")

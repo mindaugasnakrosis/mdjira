@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 import pytest
 
-from md_to_jira.apply import (
+from mdjira.apply import (
     EPIC_LINK_FIELD,
     EPIC_NAME_FIELD,
     ProjectStyle,
@@ -22,10 +22,10 @@ from md_to_jira.apply import (
     build_story_payload,
     build_subtask_payload,
 )
-from md_to_jira.jira_client import JiraAuth, JiraClient
-from md_to_jira.preview import preview
-from md_to_jira.schema import parse_intake
-from md_to_jira.yaml_io import load
+from mdjira.jira_client import JiraAuth, JiraClient
+from mdjira.preview import preview
+from mdjira.schema import parse_intake
+from mdjira.yaml_io import load
 
 FIXTURE = Path(__file__).parent / "fixtures" / "intake_min.yaml"
 
@@ -171,7 +171,7 @@ def test_apply_creates_full_hierarchy_in_order(intake, tmp_path):
         auth=JiraAuth(email="x@example.com", token="t"),
     )
 
-    with patch("md_to_jira.jira_client.subprocess.run", side_effect=fake_run):
+    with patch("mdjira.jira_client.subprocess.run", side_effect=fake_run):
         outcome = apply_intake(
             intake,
             client=client,
@@ -233,7 +233,7 @@ def test_apply_idempotent_skips_existing(intake, tmp_path):
             return _curl_response(json.dumps({"key": "ABC", "style": "classic"}), status=200)
         raise AssertionError(f"no POSTs expected on idempotent re-run, got cmd: {cmd}")
 
-    with patch("md_to_jira.jira_client.subprocess.run", side_effect=fake_run):
+    with patch("mdjira.jira_client.subprocess.run", side_effect=fake_run):
         outcome = apply_intake(
             intake,
             client=client,
@@ -250,7 +250,7 @@ def test_dry_run_makes_no_http_calls(intake, tmp_path):
     """Dry-run must never invoke curl, even for project lookup."""
     results_path = tmp_path / "results.json"
 
-    with patch("md_to_jira.jira_client.subprocess.run", side_effect=AssertionError("no http expected")):
+    with patch("mdjira.jira_client.subprocess.run", side_effect=AssertionError("no http expected")):
         outcome = apply_intake(
             intake,
             client=None,  # type: ignore[arg-type]

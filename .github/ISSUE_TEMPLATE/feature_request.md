@@ -11,7 +11,7 @@ labels: enhancement
 
 ## Proposed change
 
-<!-- What should md-to-jira do differently? CLI flag, new subcommand, skill rule, schema field? -->
+<!-- What should mdjira do differently? CLI flag, new subcommand, skill rule, schema field? -->
 
 ## Why this fits the project's scope
 
