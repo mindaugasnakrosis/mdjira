@@ -1,0 +1,93 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "md-to-jira"
+version = "0.1.0"
+description = "Turn markdown product/engineering docs into a Jira Cloud Epic → Story → Subtask backlog."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Mindaugas Nakrosis" }]
+keywords = ["jira", "markdown", "agile", "backlog", "claude", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development",
+    "Topic :: Office/Business",
+]
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "types-PyYAML>=6.0",
+    "build>=1.2",
+    "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/mindaugasnakrosis/md-to-jira"
+Repository = "https://github.com/mindaugasnakrosis/md-to-jira"
+Issues = "https://github.com/mindaugasnakrosis/md-to-jira/issues"
+
+[project.scripts]
+md-to-jira = "md_to_jira.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+extend-exclude = ["examples/", ".venv/"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # bugbear
+    "UP",     # pyupgrade
+    "SIM",    # flake8-simplify
+    "RUF",    # ruff-specific
+]
+ignore = [
+    "E501",   # line too long — line-length already set; let formatter handle
+    "B008",   # function call in default arg — fine for log=print
+    "SIM108", # ternary refactor — readability is judgment, not mechanical
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["B011"]  # asserts in tests are fine
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src/md_to_jira"]
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_optional = true
+check_untyped_defs = true
+# Not strict mode — we tolerate untyped third-party dicts (Jira responses)
+# without forcing `Any` annotations everywhere. Tighten over time.
+
+[[tool.mypy.overrides]]
+module = ["yaml"]
+ignore_missing_imports = true

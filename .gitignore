@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Build artifacts
+dist/
+
+# Tool output (per-user, not source)
+results.json
+*.local.yaml
+intake.yaml
+intake.refined.yaml
+
+# Secrets / per-user config
+.jira-token
+.jira-email
+.env
+config.yaml

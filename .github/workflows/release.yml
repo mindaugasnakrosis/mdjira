@@ -1,0 +1,37 @@
+name: Release to PyPI
+
+# Triggered by pushing a tag like v0.1.0. The release publishes to
+# PyPI via Trusted Publishing (OIDC) — configure the project at
+# https://pypi.org/manage/account/publishing/ before tagging.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Build + publish
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/md-to-jira
+    permissions:
+      id-token: write   # PyPI Trusted Publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

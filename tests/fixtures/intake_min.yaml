@@ -1,0 +1,33 @@
+defaults:
+  jira_site: https://example.atlassian.net
+  project: ABC
+
+epics:
+  - id: COSTS
+    summary: "Azure cost optimization — Phase 1"
+    priority: High
+    labels: [cost, azure]
+    description: |
+      Quick wins identified in the Feb 2026 cost review.
+
+stories:
+  - id: AHB
+    epic: COSTS
+    summary: "Enable Azure Hybrid Benefit on PROD Windows VMs"
+    priority: Highest
+    labels: [cost, azure, windows]
+    description: |
+      7 PROD Windows VMs run without AHUB. Enabling it should
+      eliminate the £2,262/month VM license line item.
+    subtasks:
+      - id: AHB-INV
+        summary: "Inventory eligible Windows Server licenses"
+      - id: AHB-RUN
+        summary: "Run az vm update --license-type Windows_Server on each VM"
+  - id: RES
+    epic: COSTS
+    summary: "Exchange wasted VM reservations"
+    priority: High
+    labels: [cost, azure, reservations]
+    description: |
+      D2s_v3 x2, D4s_v3 x2, B4ms x2, B8ms x1 — no matching VMs.
