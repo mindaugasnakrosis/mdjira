@@ -1,8 +1,11 @@
-# mdjira
+# mdjira 🎫
 
-Turn a markdown document — a roadmap, cost review, security plan, feature list, anything — into a structured Jira Cloud backlog (Epic → Story → Subtask) with priorities, labels, descriptions, and acceptance criteria.
+> **Markdown in, Jira backlog out.** A Claude Code skill that turns a markdown document — a roadmap, cost review, security plan, anything — into a structured Jira Cloud backlog (Epic → Story → Subtask) with priorities, labels, descriptions, and INVEST-compliant acceptance criteria. You give it a `.md` file. It gives you Jira tickets. That's the whole interface.
 
-You give it a `.md` file. It gives you Jira tickets. That's the whole interface.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757.svg)](https://www.anthropic.com/claude-code)
+[![Status: active](https://img.shields.io/badge/status-active-success.svg)](#)
 
 ## Why this exists
 
