@@ -7,6 +7,8 @@
 [![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757.svg)](https://www.anthropic.com/claude-code)
 [![Status: active](https://img.shields.io/badge/status-active-success.svg)](#)
 
+![mdjira — Markdown in, Jira backlog out](docs/hero.png)
+
 ## Why this exists
 
 Teams keep their roadmaps, cost reviews, security plans, and feature lists in markdown — but track delivery in Jira. Copy-pasting items by hand is slow and error-prone. `mdjira` reads the markdown and creates the issues, with a reviewable preview so you see what's about to land before anything hits Jira.
